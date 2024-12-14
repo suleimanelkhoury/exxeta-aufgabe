@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-manager-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotel-manager-frontend
+  template:
+    metadata:
+      labels:
+        app: hotel-manager-frontend
+    spec:
+      containers:
+      - name: hotel-manager-frontend
+        image: hotel-manager-frontend:latest # Image built earlier
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hotel-manager-frontend
+spec:
+  selector:
+    app: hotel-manager-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort 
