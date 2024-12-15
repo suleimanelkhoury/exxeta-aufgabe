@@ -7,38 +7,39 @@ import FilterForm from "../components/FilterForm";
 import RoomForm from "../components/RoomForm";
 
 export default function HomePage() {
-  const [rooms, setRooms] = useState([]);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [activeTab, setActiveTab] = useState("list"); // Track the current tab
+  // State hooks to manage room data and UI state
+  const [rooms, setRooms] = useState([]); // List of rooms
+  const [selectedRoom, setSelectedRoom] = useState(null); // Selected room details
+  const [activeTab, setActiveTab] = useState("list"); // Tracks which tab is active
 
-  // Fetch all rooms
+  // Function to load all rooms from the backend
   const loadRooms = async (): Promise<void> => {
     try {
       const roomsData = await fetchRooms();
-      setRooms(roomsData);
+      setRooms(roomsData); // Update the state with fetched room data
     } catch (error) {
       console.error("Error fetching rooms:", error);
     }
   };
 
-  // Fetch a specific room by ID
+  // Function to load a specific room by ID
   const loadRoomById = async (id: number) => {
     try {
       const roomData = await fetchRoomById(id);
-      setSelectedRoom(roomData);
+      setSelectedRoom(roomData); // Set the selected room's details
     } catch (error) {
       console.error("Error fetching room:", error);
-      setSelectedRoom(null);
+      setSelectedRoom(null); // In case of error, reset selected room
     }
   };
 
-  // Initialize the database with starting rows
+  // Initialize the database and load the room list
   const initDatabaseAndLoadRooms = async () => {
     try {
-      // First, initialize the database
+      // Initialize the database with predefined rows
       await initDatabase();
       
-      // Then load the rooms
+      // Load the list of rooms after initialization
       const roomsData = await fetchRooms();
       setRooms(roomsData);
       
@@ -48,11 +49,12 @@ export default function HomePage() {
     }
   };
 
+  // `useEffect` to call the initialization function on page load
   useEffect(() => {
-    initDatabaseAndLoadRooms();
+    initDatabaseAndLoadRooms(); // Initialize DB and fetch rooms
   }, []);
 
-  // Tabs Navigation
+  // Render tabs (list, query, create)
   const renderTabs = () => (
     <div className="flex border-b mb-4">
       {["list", "query", "create"].map((tab) => (
@@ -63,7 +65,7 @@ export default function HomePage() {
               ? "border-b-2 border-blue-500 font-bold"
               : "text-gray-500"
           }`}
-          onClick={() => setActiveTab(tab)}
+          onClick={() => setActiveTab(tab)} // Switch active tab
         >
           {tab.charAt(0).toUpperCase() + tab.slice(1)} Rooms
         </button>
@@ -74,31 +76,33 @@ export default function HomePage() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Hotel Room Manager (eXXellent Nights!)</h1>
-      {/* Tabs Navigation */}
+      {/* Render the navigation tabs */}
       {renderTabs()}
 
-      {/* Tabs Content */}
+      {/* Content based on the active tab */}
       {activeTab === "list" && (
         <div>
-          {/* Filter Rooms and Display List */}
+          {/* Filter and List Rooms */}
           <div className="mb-4">
-            <FilterForm setRooms={setRooms} />
+            <FilterForm setRooms={setRooms} /> {/* Filter rooms */}
           </div>
 
-          <RoomList rooms={rooms} />
+          <RoomList rooms={rooms} /> {/* Show rooms list */}
         </div>
       )}
 
       {activeTab === "query" && (
         <div>
+          {/* Query a room by ID */}
           <input
             type="number"
             placeholder="Enter Room Number"
-            onBlur={(e) => loadRoomById(Number(e.target.value))}
+            onBlur={(e) => loadRoomById(Number(e.target.value))} // Fetch room by ID on blur
             className="border p-2 mr-2"
           />
           {selectedRoom ? (
             <div className="border p-2 mt-2 rounded">
+              {/* Display selected room details */}
               <p><strong>Room ID:</strong> {selectedRoom.id}</p>
               <p><strong>Room Size:</strong> {selectedRoom.room_size}</p>
               <p><strong>Minibar:</strong> {selectedRoom.has_minibar ? "Yes" : "No"}</p>
@@ -111,6 +115,7 @@ export default function HomePage() {
 
       {activeTab === "create" && (
         <div>
+          {/* Room creation form */}
           <RoomForm onRoomCreated={loadRooms} />
         </div>
       )}

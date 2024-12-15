@@ -1,19 +1,21 @@
 import { filterRooms } from "../utils/api";
 
+// Define props interface to receive `setRooms` function
 interface FilterFormProps {
-  setRooms: React.Dispatch<React.SetStateAction<any[]>>;
+  setRooms: React.Dispatch<React.SetStateAction<any[]>>; // Function to update rooms state
 }
 
 const FilterForm: React.FC<FilterFormProps> = ({ setRooms }) => {
+  // Handles form submission and filters rooms
   const handleFilter = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
     const formData = new FormData(e.target as HTMLFormElement);
-    const query = new URLSearchParams(formData as any).toString();
+    const query = new URLSearchParams(formData as any).toString(); // Convert form data to query string
 
-    // Make API call to filter rooms
     try {
+      // Make API call to filter rooms based on the query
       const data = await filterRooms(query);
-      setRooms(data); // Update room list with filtered results
+      setRooms(data); // Update the room list based on the filtered results
     } catch (error) {
       console.error("Error filtering rooms:", error);
     }
@@ -21,6 +23,7 @@ const FilterForm: React.FC<FilterFormProps> = ({ setRooms }) => {
 
   return (
     <form onSubmit={handleFilter} className="mb-4">
+      {/* Filter form fields */}
       <label>
         Room Size:
         <select name="room_size" className="ml-2">

@@ -1,24 +1,34 @@
 from flask import Flask
 import os
-from flask_migrate import Migrate
-from flask_cors import CORS
-from models import db
+from flask_migrate import Migrate  # For database migrations
+from flask_cors import CORS  # For Cross-Origin Resource Sharing
+from models import db  # Import the database instance
 
 def create_app():
+    """
+    Application Factory Function:
+    - Initializes the Flask app
+    - Configures database URI from environment variables
+    - Adds CORS support
+    - Initializes database and migration
+    """
     app = Flask(__name__)
-    # Get the environment variables for DB connection
-    db_host = os.getenv("POSTGRES_HOST", "hotel-manager-db")
-    db_user = os.getenv("POSTGRES_USER", "admin")
-    db_password = os.getenv("POSTGRES_PASSWORD", "password")
-    db_name = os.getenv("POSTGRES_DB", "hotel_manager")
-    db_port = os.getenv("POSTGRES_PORT", "5432")
 
+    # Fetch database connection details from environment variables
+    db_host = os.getenv("POSTGRES_HOST")
+    db_user = os.getenv("POSTGRES_USER")
+    db_password = os.getenv("POSTGRES_PASSWORD")
+    db_name = os.getenv("POSTGRES_DB")
+    db_port = os.getenv("POSTGRES_PORT")
+
+    # Allow cross-origin requests from any domain
     CORS(app, resources={r"/*": {"origins": "*"}})
-    # Configure database URI (PostgreSQL with Docker)
-    #app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://admin:password@localhost:5432/hotel_manager"
+
+    # Configure the SQLAlchemy database URI for PostgreSQL
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
-    # Initialize extensions
-    db.init_app(app)
-    Migrate(app, db)
+
+    # Initialize database and Flask-Migrate
+    db.init_app(app)  # Attach the database instance to the app
+    Migrate(app, db)  # Enable migration support
 
     return app

@@ -1,20 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { createRoom } from "../utils/api";
+import axios from "axios";
 
+// Define the callback function to refresh room list after room creation
 interface RoomFormProps {
-  onRoomCreated: () => void; // Callback to refresh room list
+  onRoomCreated: () => void; 
 }
 
 export default function RoomForm({ onRoomCreated }: RoomFormProps) {
+  // State hooks for form input values
   const [id, setId] = useState("");
   const [roomSize, setRoomSize] = useState("single");
   const [hasMinibar, setHasMinibar] = useState(false);
 
+  // Handle form submission to create a new room
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
 
+    // Room data to be sent to the backend
     const roomData = {
       id,
       room_size: roomSize,
@@ -22,11 +26,12 @@ export default function RoomForm({ onRoomCreated }: RoomFormProps) {
     };
 
     try {
-      await createRoom(roomData);
-      setId("");
+      // Make API call to create room
+      await axios.post("http://hotel-manager:5000/rooms", roomData);
+      setId(""); // Reset form fields
       setRoomSize("single");
       setHasMinibar(false);
-      onRoomCreated(); // Refresh the room list
+      onRoomCreated(); // Trigger callback to refresh room list
     } catch (error) {
       console.error("Error creating room:", error);
     }
@@ -34,6 +39,7 @@ export default function RoomForm({ onRoomCreated }: RoomFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-2 mb-4">
+      {/* Form inputs for room ID, size, and minibar */}
       <input
         type="text"
         placeholder="Room ID"

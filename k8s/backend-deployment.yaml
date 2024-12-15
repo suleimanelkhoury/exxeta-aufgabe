@@ -18,9 +18,9 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
-        env:
+        env: # better using ConfigMap, but i left them here for simplicity)
         - name: POSTGRES_HOST
-          value: "hotel-manager-db"  # PostgreSQL service name in Kubernetes
+          value: "hotel-manager-db"
         - name: POSTGRES_USER
           value: "admin"
         - name: POSTGRES_PASSWORD

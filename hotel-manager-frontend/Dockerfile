@@ -1,7 +1,7 @@
 # Single Stage: Build and Run Next.js app
 FROM node:22
 
-# Set working directory
+# Set working directory for the app
 WORKDIR /app
 
 # Copy package.json and install dependencies
@@ -10,7 +10,7 @@ RUN npm install
 RUN npm install axios react react-dom
 RUN npm install --save-dev typescript @types/react @types/react-dom
 
-# Copy the source code and required files
+# Copy source code and required configuration files
 COPY ./src ./src
 COPY ./public ./public
 COPY ./next.config.ts ./next.config.ts
@@ -24,6 +24,6 @@ COPY ./postcss.config.mjs ./postcss.config.mjs
 # Build the Next.js project
 RUN npm run build
 
-# Expose the port and start the app
+# Expose port 3000 and start the app
 EXPOSE 3000
 CMD ["npm", "start"]

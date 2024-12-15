@@ -122,5 +122,3 @@ kubectl delete -f k8s/
 ```bash
 minikube stop
 ```
-
----
