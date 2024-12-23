@@ -1,53 +1,62 @@
 import { useState } from "react";
+import { fetchRoomById } from "../utils/api";
 
 interface QueryRoomFormProps {
-  onRoomSelected: (room: any) => void; // Callback to set selected room in parent
+  onRoomSelected: () => void;
 }
 
 const QueryRoomForm: React.FC<QueryRoomFormProps> = ({ onRoomSelected }) => {
-  const [roomId, setRoomId] = useState<number | string>(""); // State to manage input value
-  const [error, setError] = useState<string | null>(null); // State to handle errors (e.g., invalid room ID)
+  const [roomId, setRoomId] = useState<string>(""); // Room ID input state
+  const [selectedRoom, setSelectedRoom] = useState<any | null>(null); // Selected room state
+  const [error, setError] = useState<string | null>(null); // Error state
 
-  // Handle the input field's change event
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomId(e.target.value); // Update the room ID in state
-    setError(null); // Reset error when user starts typing
-  };
-
-  // Function to fetch room by ID and update the parent component with selected room
-  const handleBlur = async () => {
+  // Function to handle the query when the button is clicked
+  const handleQuery = async () => {
     if (!roomId) {
       setError("Please enter a valid Room ID.");
       return;
     }
 
     try {
-      const response = await fetch(`/api/rooms/${roomId}`); // Replace with the actual API call
-      const room = await response.json();
-
-      if (response.ok) {
-        onRoomSelected(room); // Send the room data to the parent
-      } else {
-        setError("Room not found. Please check the Room ID.");
-        onRoomSelected(null); // Reset selected room in case of error
-      }
+      const room = await fetchRoomById(roomId); // Call the API to fetch room by ID
+      setSelectedRoom(room); // Set the selected room data
+      setError(null); // Clear any previous error
+      onRoomSelected(); // Trigger parent callback to refresh the room list
     } catch (err) {
-      setError("Error fetching room. Please try again.");
-      console.error(err);
+      setError("Room not found. Please check the Room ID.");
+      setSelectedRoom(null); // Reset selected room on error
     }
   };
 
   return (
     <div>
+      {/* Input field for Room ID */}
       <input
         type="number"
         placeholder="Enter Room ID"
         value={roomId}
-        onChange={handleInputChange}
-        onBlur={handleBlur} // Trigger the query when the input loses focus
+        onChange={(e) => setRoomId(e.target.value)} // Update roomId as the user types
         className="border p-2 mr-2"
       />
-      {error && <p className="text-red-500">{error}</p>} {/* Display error messages */}
+      {/* Query button */}
+      <button
+        onClick={handleQuery} // Trigger the query when clicked
+        className="bg-blue-500 text-white px-4 py-2"
+      >
+        Query Room
+      </button>
+
+      {/* Display error message */}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {/* Display room details if found */}
+      {selectedRoom && (
+        <div className="border p-2 mt-2 rounded">
+          <p><strong>Room ID:</strong> {selectedRoom.id}</p>
+          <p><strong>Room Size:</strong> {selectedRoom.room_size}</p>
+          <p><strong>Minibar:</strong> {selectedRoom.has_minibar ? "Yes" : "No"}</p>
+        </div>
+      )}
     </div>
   );
 };

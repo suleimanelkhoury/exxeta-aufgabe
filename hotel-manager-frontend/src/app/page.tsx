@@ -1,14 +1,15 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { fetchRooms, fetchRoomById, initDatabase } from "../utils/api";
+import { fetchRooms, initDatabase } from "../utils/api";
 import RoomList from "../components/RoomList";
 import FilterForm from "../components/FilterForm";
 import RoomForm from "../components/RoomForm";
-import QueryRoomForm from "../components/QueryRoomForm"; // Import new component
+import QueryRoomForm from "../components/QueryRoomForm";
 
 export default function HomePage() {
   const [rooms, setRooms] = useState([]); // List of rooms
-  const [selectedRoom, setSelectedRoom] = useState(null); // Selected room details
-  const [activeTab, setActiveTab] = useState("list"); // Tracks which tab is active
+  const [activeTab, setActiveTab] = useState("list"); // Tracks which tab is active between ("list", "query", or "create") 
 
   const loadRooms = async (): Promise<void> => {
     try {
@@ -19,29 +20,8 @@ export default function HomePage() {
     }
   };
 
-  const loadRoomById = async (id: number) => {
-    try {
-      const roomData = await fetchRoomById(id);
-      setSelectedRoom(roomData); // Set the selected room's details
-    } catch (error) {
-      console.error("Error fetching room:", error);
-      setSelectedRoom(null); // In case of error, reset selected room
-    }
-  };
-
-  const initDatabaseAndLoadRooms = async () => {
-    try {
-      await initDatabase();
-      const roomsData = await fetchRooms();
-      setRooms(roomsData);
-      console.log("Database initialized and rooms loaded successfully");
-    } catch (error) {
-      console.error("Error initializing database and loading rooms:", error);
-    }
-  };
-
   useEffect(() => {
-    initDatabaseAndLoadRooms();
+    initDatabase().then(loadRooms); // Initialize database, then load rooms
   }, []);
 
   const renderTabs = () => (
@@ -70,30 +50,21 @@ export default function HomePage() {
       {activeTab === "list" && (
         <div>
           <div className="mb-4">
-            <FilterForm setRooms={setRooms} />
+            <FilterForm setRooms={setRooms} /> {/* Displays Filters related to the Query */}
           </div>
-          <RoomList rooms={rooms} />
+          <RoomList rooms={rooms} /> {/* Returns list of Rooms */}
         </div>
       )}
 
       {activeTab === "query" && (
         <div>
-          <QueryRoomForm onRoomSelected={setSelectedRoom} /> {/* Query a room by ID */}
-          {selectedRoom ? (
-            <div className="border p-2 mt-2 rounded">
-              <p><strong>Room ID:</strong> {selectedRoom.id}</p>
-              <p><strong>Room Size:</strong> {selectedRoom.room_size}</p>
-              <p><strong>Minibar:</strong> {selectedRoom.has_minibar ? "Yes" : "No"}</p>
-            </div>
-          ) : (
-            <p className="text-gray-500 mt-2">No room found. Please enter a valid ID.</p>
-          )}
+          <QueryRoomForm onRoomSelected={loadRooms} /> {/* Query a room by ID */}
         </div>
       )}
 
       {activeTab === "create" && (
         <div>
-          <RoomForm onRoomCreated={loadRooms} />
+          <RoomForm onRoomCreated={loadRooms} /> {/* Creates a Room and refreshes the list of all rooms using "loadRooms" argument */}
         </div>
       )}
     </div>
