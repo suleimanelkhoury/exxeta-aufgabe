@@ -1,6 +1,6 @@
-# Hotel Manager App (eXXellent Nights!)
+# Hotel Manager App
 
-This guide will describe the set up and deployment of the Exxeta Coding Task Challenge **Hotel Manager** using **Minikube** and **Kubernetes**. The setup includes both **frontend** and **backend** services, as well as the **PostgreSQL database**.
+This guide will describe the set up and deployment of a typical Coding Task Challenge **Hotel Manager** using **Minikube** and **Kubernetes**. The setup includes both **frontend** and **backend** services, as well as the **PostgreSQL database**.
 
 ## Project Overview
 
