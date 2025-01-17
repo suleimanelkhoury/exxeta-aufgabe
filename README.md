@@ -2,11 +2,6 @@
 # Vehicle Sales Manager App
 
 This guide will describe the set up and deployment of the application **Vehicle Sales Manager** using **Minikube** and **Kubernetes**. The setup includes both **frontend** and **backend** services, as well as the **PostgreSQL database**.
-=======
-# Hotel Manager App
-
-This guide will describe the set up and deployment of a typical Coding Task Challenge **Hotel Manager** using **Minikube** and **Kubernetes**. The setup includes both **frontend** and **backend** services, as well as the **PostgreSQL database**.
->>>>>>> 7348910ac0e2af8bb0992140057c1332b1bda16e
 
 ## Project Overview
 
