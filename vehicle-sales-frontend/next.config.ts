@@ -3,7 +3,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://hotel-manager:5000/:path*'
+        destination: 'http://vehicle-sales-backend:5000/:path*'
       }
     ];
   }

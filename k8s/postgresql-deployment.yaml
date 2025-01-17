@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hotel-manager-db
+  name: vehicle-sales-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hotel-manager-db
+      app: vehicle-sales-db
   template:
     metadata:
       labels:
-        app: hotel-manager-db
+        app: vehicle-sales-db
     spec:
       containers:
       - name: postgres
@@ -23,7 +23,7 @@ spec:
         - name: POSTGRES_PASSWORD
           value: "password"
         - name: POSTGRES_DB
-          value: "hotel_manager"
+          value: "vehicle-sales"
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
@@ -34,10 +34,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hotel-manager-db
+  name: vehicle-sales-db
 spec:
   selector:
-    app: hotel-manager-db
+    app: vehicle-sales-db
   ports:
     - protocol: TCP
       port: 5432

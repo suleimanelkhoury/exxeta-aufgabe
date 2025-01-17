@@ -1,42 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hotel-manager
+  name: vehicle-sales-backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hotel-manager
+      app: vehicle-sales-backend
   template:
     metadata:
       labels:
-        app: hotel-manager
+        app: vehicle-sales-backend
     spec:
       containers:
-      - name: hotel-manager
-        image: hotel-manager:latest
+      - name: vehicle-sales-backend
+        image: vehicle-sales-backend:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
         env: # better using ConfigMap, but i left them here for simplicity)
         - name: POSTGRES_HOST
-          value: "hotel-manager-db"
+          value: "vehicle-sales-db"
         - name: POSTGRES_USER
           value: "admin"
         - name: POSTGRES_PASSWORD
           value: "password"
         - name: POSTGRES_DB
-          value: "hotel_manager"
+          value: "vehicle-sales"
         - name: POSTGRES_PORT
           value: "5432"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hotel-manager
+  name: vehicle-sales-backend
 spec:
   selector:
-    app: hotel-manager
+    app: vehicle-sales-backend
   ports:
     - protocol: TCP
       port: 5000

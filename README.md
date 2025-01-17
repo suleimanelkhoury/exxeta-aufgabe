@@ -1,14 +1,14 @@
-# Hotel Manager App (eXXellent Nights!)
+# Vehicle Sales Manager App
 
-This guide will describe the set up and deployment of the Exxeta Coding Task Challenge **Hotel Manager** using **Minikube** and **Kubernetes**. The setup includes both **frontend** and **backend** services, as well as the **PostgreSQL database**.
+This guide will describe the set up and deployment of the application **Vehicle Sales Manager** using **Minikube** and **Kubernetes**. The setup includes both **frontend** and **backend** services, as well as the **PostgreSQL database**.
 
 ## Project Overview
 
 The application consists of:
 
 - **Frontend**: A Next.js application for the user interface.
-- **Backend**: A Flask API to manage hotel room data.
-- **PostgreSQL Database**: Used to persist hotel room data.
+- **Backend**: A Flask API to manage Vehicle Sales data.
+- **PostgreSQL Database**: Used to persist Vehicle Sales data.
 
 ## Setup Instructions
 
@@ -20,16 +20,16 @@ Before deploying to Kubernetes, you need to build Docker images for the frontend
 The following bash code defines the steps to build and run the **Next.js** application inside a Docker container:
 
 ```bash
-cd hotel-manager-frontend
-docker build -t hotel-manager-frontend .
+cd vehicle-sales-frontend
+docker build -t vehicle-sales-frontend .
 ```
 
 #### Build the Backend Docker Image:
 The following bash code defines the steps to build and run the **Flask** API inside a Docker container:
 
 ```bash
-cd hotel-manager
-docker build -t hotel-manager .
+cd vehicle-sales-backend
+docker build -t vehicle-sales-backend .
 ```
 
 ### 2. Setting Up Minikube
@@ -47,8 +47,8 @@ minikube start
 This step skips uploading the images to a docker file host (such as DockerHub):
 
 ```bash
-minikube image load hotel-manager:latest
-minikube image load hotel-manager-frontend:latest
+minikube image load vehicle-sales-backend:latest
+minikube image load vehicle-sales-frontend:latest
 ```
 
 ### 4. Apply Kubernetes Configurations
@@ -57,7 +57,7 @@ You need to apply the Kubernetes deployment configurations for each service. Hav
 
 #### Apply PostgreSQL Deployment:
 
-- Defines the deployment and service for PostgreSQL, used to store hotel room data.
+- Defines the deployment and service for PostgreSQL, used to store Vehicle Sales data.
 - Configures the database with user credentials and exposes it on port `5432`.
 
 ```bash
@@ -102,7 +102,7 @@ kubectl get svc
 Once the Frontend is running in the cluster, you need to expose it locally to access the application.
 
 ```bash
-minikube service hotel-manager-frontend
+minikube service vehicle-sales-frontend
 ```
 
 This will open the frontend service in your default web browser.
